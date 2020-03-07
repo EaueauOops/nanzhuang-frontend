@@ -21,23 +21,18 @@ router.beforeEach((to, from, next) => {
       NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
     } else {
       if (store.getters.addRouters.length === 0) {
-        console.log('重新获取菜单————')
-        store.dispatch('GenerateRoutes').then(res => {
-          router.addRoutes(res)
-          next({ ...to, replace: true })
-        })
-        /*store.dispatch('GetInfo').then(res => { // 拉取用户信息
-          store.dispatch('GenerateRoutes').then(res => {
-            console.log(res)
-            // router.addRoutes(store.getters.addRouters)
-            next({ ...to, replace: true })
+        store.dispatch('GetInfo').then(res => {
+          let roles = []
+          roles.push(res.data.role)
+          // console.log(roles);
+          store.dispatch('GenerateRoutes',{ roles }).then(() => {
+            router.addRoutes(store.getters.addRouters)
+            next({...to, replace: true })
           })
-        }).catch((err) => {
-          store.dispatch('FedLogOut').then(() => {
-            Message.error(err || 'Verification failed, please login again')
-            next({ path: '/' })
-          })
-        })*/
+        }).catch(err =>{
+          console.log(err);
+          console.log("走到这里");
+        });
       } else {
         // 没有动态改变权限的需求可直接next() 删除下方权限判断 ↓
         next()
@@ -45,8 +40,10 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     if (whiteList.indexOf(to.path) !== -1) {
+      // console.log('next()');
       next()
     } else {
+      // console.log('elsenextlogin');
       next('/login')
       NProgress.done()
     }

@@ -14,12 +14,15 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(
   config => {
-    if (store.getters.token && config.method === 'post') {
-      let dataObj = JSON.parse(config.data)
-      dataObj.token = store.getters.token
-      dataObj.operatorId = store.getters.info.operatorId
-      config.data = JSON.stringify(dataObj)
+    // if (store.getters.token && config.method === 'post') {
+    if (store.getters.token ) {
+      // let dataObj = JSON.parse(config.data)
+      // dataObj.token = store.getters.token
+      // console.log("request"+dataObj.token);
+      // // dataObj.operatorId = store.getters.info.operatorId
+      // config.data = JSON.stringify(dataObj)
       //每个请求加上token及operatorId
+      config.headers.token  = store.getters.token
     }
     return config
   },
@@ -30,18 +33,20 @@ service.interceptors.request.use(
   }
 )
 
-// respone拦截器
+// response拦截器
 service.interceptors.response.use(
   response => {
-    const data = response.data
-    if (data.status != 0) {
+    const data = response.data;
+    if (data.code != 0) {
+      // console.log("error");
       Message({
         message: data.des,
         type: 'error',
         duration: 5 * 1000
       })
       // -103:Token 过期了;
-      if (data.status == '-103') {
+      if (data.code == '-103') {
+        // console.log("error");
         MessageBox.alert('登录已失效，请重新登录系统！', '提示', {
           showClose: false,
           center: true

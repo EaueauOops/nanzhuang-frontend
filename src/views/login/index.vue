@@ -106,13 +106,12 @@ export default {
             .dispatch('Login', this.loginForm)
             .then(() => {
               this.loading = false
-              this.$router.push({ path: '/' })
+              this.$router.push('/home')
             })
             .catch(() => {
               this.loading = false
             })
         } else {
-          console.log('error submit!!')
           return false
         }
       })

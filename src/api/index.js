@@ -44,7 +44,7 @@ export function outLogin() {
 
 //获取用户信息
 export function getInfo() {
-  return _get('manager/getManagerUser')
+  return _get('user/info')
 }
 
 //获取用户菜单列表

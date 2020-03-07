@@ -10,11 +10,6 @@ export let constantRouterMap = [
     hidden: true
   },
   {
-    path: '/404',
-    component: () => import('@/views/errorPage/404'),
-    hidden: true
-  },
-  {
     path: '/',
     redirect: '/home',
     component: () => import('@/views/layout/Layout'),
@@ -42,5 +37,32 @@ export default new Router({
   scrollBehavior: () => ({
     y: 0
   }),
-  routes: constantRouterMap
+  routes: constantRouterMap,
+  mode: 'history'
 })
+
+//异步挂载的路由
+//动态需要根据权限加载的路由表
+export const asyncRouterMap = [
+  {
+    path: '/permission',
+    component: () => import('@/views/layout/Layout'),
+    name: '权限测试',
+    meta: { role: ['admin','user']},
+    children: [
+      {
+        path:'roleLise',
+        component: () => import('@/views/system/roleList'),
+        name: '用户管理',
+        meta: { role: ['admin']}
+      }
+    ]
+  },
+  {
+    path: '/404',
+    component: () => import('@/views/errorPage/404'),
+    name: 'Page404',
+    meta: { title: '404', noCache: true }
+  },
+  { path: '*', redirect: '/404', hidden: true }
+]
