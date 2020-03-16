@@ -23,11 +23,20 @@ export let constantRouterMap = [
         },
         component: () => import('@/views/home/index')
       },
-      // {
-      //   path: '/401',
-      //   component: () => import('@/views/errorPage/401'),
-      //   hidden: true
-      // }
+    ]
+  },
+  {
+    path: '/datadisplay',
+    component: () => import('@/views/layout/Layout'),
+    // hidden: true,
+    redirect:'/datadisplay/index',
+    children: [
+      {
+        path: 'index',
+        name: 'datadisplay',
+        meta: { title: 'datadisplay', icon: 'pdf' },
+        component: () => import('@/views/dataDisplay/index')
+      },
     ]
   }
 ]
@@ -48,13 +57,13 @@ export const asyncRouterMap = [
     path: '/permission',
     component: () => import('@/views/layout/Layout'),
     name: '权限测试',
-    meta: { role: ['admin','user']},
+    meta: { roles: ['admin']},
     children: [
       {
-        path:'roleLise',
+        path:'roleList',
         component: () => import('@/views/system/roleList'),
         name: '用户管理',
-        meta: { role: ['admin']}
+        meta: { roles: ['admin'] , icon: 'bug' , title: 'roleList'}
       }
     ]
   },
@@ -62,6 +71,7 @@ export const asyncRouterMap = [
     path: '/404',
     component: () => import('@/views/errorPage/404'),
     name: 'Page404',
+    hidden:true,
     meta: { title: '404', noCache: true }
   },
   { path: '*', redirect: '/404', hidden: true }

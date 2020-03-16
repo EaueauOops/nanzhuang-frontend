@@ -30,7 +30,8 @@ const getters = {
   info: state => keepStorage(state.user, 'info'),
   avatar: state => state.user.avatar,
   routers: state => state.user.routers,
-  addRouters: state => state.user.addRouters
+  addRouters: state => state.user.addRouters,
+  roles: state => state.user.roles,
 }
 
 export default getters

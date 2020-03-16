@@ -9,8 +9,8 @@ const { outLogin,login,getMenus } = api.system
 
 function hasPermission(roles, route) {
   // console.log(roles);
-  if (route.meta && route.meta.role) {
-    return roles.some(role => route.meta.role.indexOf(role) >= 0)
+  if (route.meta && route.meta.roles) {
+    return roles.some(role => route.meta.roles.indexOf(role) >= 0)
   } else {
     return true
   }
@@ -35,7 +35,8 @@ const user = {
     info: {},
     avatar: '',
     routers: constantRouterMap,
-    addRouters: []
+    addRouters: [],
+    roles: [],
   },
 
   mutations: {
@@ -56,6 +57,9 @@ const user = {
       // console.log(constantRouterMap)
       state.routers = constantRouterMap.concat(routers)
       sessionStorage.setItem('routers', JSON.stringify(state.routers))
+    },
+    SET_ROLES: (state, roles) => {
+      state.roles = roles
     }
   },
 
@@ -66,7 +70,7 @@ const user = {
       return new Promise((resolve, reject) => {
         login(username, userInfo.password).then(res => {
           const data = res
-          console.log('user'+data.data.token)
+          // console.log('user'+data.data.token)
           if (data.code == 0 && data.data.token) {
               commit('SET_TOKEN', data.data.token)
               // commit('SET_INFO', data.operatorInfo)
@@ -100,6 +104,7 @@ const user = {
           .then(res => {
             const data = res.data.role
             commit('SET_INFO', data)
+            commit('SET_ROLES', data)
             resolve(res)
           })
           .catch(error => {
@@ -112,6 +117,7 @@ const user = {
     GenerateRoutes({ commit }, data) {
       return new Promise(resolve => {
         const { roles } = data
+        console.log(roles);
         const accessedRouters = asyncRouterMap.filter(v => {
           if(roles.indexOf('admin') >= 0 ) return true
           if(hasPermission(roles, v)) {

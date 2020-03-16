@@ -20,13 +20,14 @@ router.beforeEach((to, from, next) => {
       next({ path: '/' })
       NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
     } else {
-      if (store.getters.addRouters.length === 0) {
+      if (store.getters.roles.length === 0) {
         store.dispatch('GetInfo').then(res => {
           let roles = []
           roles.push(res.data.role)
           // console.log(roles);
           store.dispatch('GenerateRoutes',{ roles }).then(() => {
             router.addRoutes(store.getters.addRouters)
+            // console.log(store.getters.routers);
             next({...to, replace: true })
           })
         }).catch(err =>{
